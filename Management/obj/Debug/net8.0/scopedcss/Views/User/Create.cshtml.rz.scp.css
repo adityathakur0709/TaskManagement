@@ -1,0 +1,14 @@
+/*.create{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    box-shadow: 1rem 1rem 1rem -1rem black;
+}
+
+.Square {
+    background-color: powderblue;
+}
+
+.form-div{
+    padding: 2rem;
+}
+*/

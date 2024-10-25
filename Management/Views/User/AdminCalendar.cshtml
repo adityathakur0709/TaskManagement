@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Management.Models.Activity>;
+<!DOCTYPE html>
+<html>
+<head>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const activities = @Html.Raw(Json.Serialize(Model)); // Serialize activities from Razor model to JavaScript array
+
+            const events = activities.map(activity => ({
+                title: activity.taskName,
+                start: activity.taskDueDate,
+            }));
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: events // Assign events to FullCalendar
+            });
+
+            calendar.render();
+        });
+    </script>
+</head>
+<body>
+    <div id='calendar'></div>
+</body>
+</html>
+
+

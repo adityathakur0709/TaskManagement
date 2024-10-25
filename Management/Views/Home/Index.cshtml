@@ -1,0 +1,50 @@
+﻿@model Management.Models.User;
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<body style="background: linear-gradient(164deg, rgba(2,0,36,1) 0%, rgba(9,84,121,1) 39%, rgba(0,212,255,1) 100%);">
+    <section class="vh-60 gradient-custom mt-5">
+        <div class="container vh-20">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card bg-dark text-white  vh-25">
+                        <div class="card-body ps-4 pe-4 pt-2 pb-1 text-center">
+
+                            <div class="mb-md-5 mt-5 pb-2">
+                                <h2 class="fw-bold mb-2 ">-- LOGIN --</h2>
+                                  <form asp-action="Index"  >
+                                      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <div class="form-group">
+                                                <label asp-for="userName" class="control-label "></label>
+                                                <input asp-for="userName" class="form-control mb-4" />
+                                                <span asp-validation-for="userName" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label asp-for="password" class="control-label"></label>
+                                                <input asp-for="password" class="form-control mb-4" />
+                                                <span asp-validation-for="password" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+                                        <input type="submit" value="Login" class="btn btn-outline-light btn-lg px-4 mb-4 "  />
+                                            </div>
+                                            <div>
+                                        <a asp-action="Signup" class="btn btn-outline-light btn-lg px-4">Not registered? SignUp</a>
+                                            </div>
+                                  </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

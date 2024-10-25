@@ -1,0 +1,198 @@
+﻿@model IEnumerable<Management.Models.Activity>
+@using Management.Models
+@{
+    Pager pager = new Pager(); //empty pager constructor
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+<div class="container">
+    <header class="bg-primary text-white text-center py-3">
+        <h1 class="m-0">My Task</h1>
+    </header>
+</div>
+
+@{
+    var isUser = User.IsInRole("User");
+    if (isUser)
+    {
+        <div class="d-flex justify-content-between">
+            <a asp-action="Create" class="btn btn-primary m-3">Create Task</a>
+            <a asp-action="LogOut" class="btn btn-primary float-end m-3">Log Out</a>
+            <a asp-action="Calendar" class="btn btn-primary m-3">Calendar</a>
+           
+        </div>
+    }
+}
+
+
+<h1 class="text-center" style="font-size: 1.5rem;">Welcome, @ViewBag.UserName!</h1>
+<div class="w-100">
+@if(TempData["AlertMessage"]!=null){ //Notification
+    <div class="alert alert-success">
+        @TempData["AlertMessage"]
+        <button type="button" class="close" data-dismiss="alert">
+            <span class="cross">&times;</span>
+        </button>
+    </div>
+}
+</div>
+
+@{
+    var isAdmin = User.IsInRole("Admin");
+    if (isAdmin)
+    {
+         <a asp-action="Admin" class="btn btn-primary m-3">User List</a>
+        <a asp-action="LogOut" class="btn btn-primary float-end m-3">Log Out</a>
+        <a asp-action="AdminCalendar" class="btn btn-primary m-3">Calendar</a>
+        <a class="btn btn-primary" href="@Url.Action("ExportToExcel")">Export</a>
+    }
+}
+
+<div class="row">
+    <div class="col-md-2">
+        <form asp-action="Filter" asp-route-userId="@ViewBag.userid" method="post">
+            <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select name="filter" class="form-select"
+                        asp-items="@(new SelectList(ViewBag.Categories,"CategoryId","Name",ViewBag.Filters.CategoryId))">
+                    <option value="All">All</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Due:</label>
+                <select name="filter" class="form-select"
+                        asp-items="@(new SelectList(ViewBag.DueFilters,"Key","Value",ViewBag.Filters.Due))">
+                    <option value="all">All</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select name="filter" class="form-select"
+                        asp-items="@(new SelectList(ViewBag.Statuses,"StatusId","StatusName",ViewBag.Filters.StatusId))">
+                    <option value="all">All</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Priority</label>
+                <select name="filter" class="form-select"
+                        asp-items="@(new SelectList(ViewBag.Priorities,"PriorityId","Name",ViewBag.Filters.PriorityId))">
+                    <option value="all">All</option>
+                </select>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a asp-action="Index" asp-route-id="" class="btn btn-primary">Clear</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-10">
+        <table class="table table-bordered table-striped mt-2">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>Task Name</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Activity task in Model)
+                {
+                    string overdue = task.overdue ? "bg-warning" : "";
+                    <tr>
+                        <td>@task.TaskName</td>
+                        <td>@task.Description</td>
+                        <td>@task.category.Name</td>
+                        <td class="@overdue">@task.TaskDueDate.ToShortDateString()</td>
+                        <td class="@overdue">@task.status.StatusName</td>
+                        <td>@task.priority.Name</td>
+
+                        <td>
+                            @if (task.StatusId == "open")
+                            {
+                                <form asp-action="Complete" asp-controller="User" method="post" asp-route-id="@task.TaskId">
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                            name="@nameof(Activity.TaskId)" value="@task.TaskId">
+                                        Complete
+                                    </button>
+                                </form>
+                            }
+
+                        </td>
+
+
+                        <td>
+                            <div class="d-flex flex-nowrap">
+                                
+                                <button style="border-0 border-left-2">@Html.ActionLink("Edit", "Edit", new { id = task.TaskId })</button>
+                                <button style="border-left">@Html.ActionLink("Details", "Details", new { id = task.TaskId })</button>
+                                <button>@Html.ActionLink("Delete", "Delete", new { id = task.TaskId })</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+        
+       
+            
+        @* <a asp-action="Edit" class="btn btn-primary">Edit</a>
+            <a asp-action="Details" class="btn btn-primary">Details</a>
+            <button type="submit" class="btn btn-primary">Delete</button> *@
+            
+       <div class="container mb-0">
+            @if (pager.TotalPages > 0)
+            {
+               <ul class="pagination justify-content-end">
+            @for(var pge=pager.StartPage; pge <= pager.EndPage; pge++)
+            {
+                <li class="page-item @(pge==pager.CurrentPage? "active":"")">
+                    <a class="page-link" asp-controller="User" asp-action="Index" asp-route-pg="@pge">@pge</a>
+
+                </li>
+            }
+
+             </ul>
+                
+            }
+
+       </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        var crossBtn = document.querySelector('.cross');
+        var alertEl = document.querySelector('.alert');
+
+        crossBtn.addEventListener('click', () => {
+            alertEl.style.display = 'none';
+        });
+
+        setTimeout(() => {
+            alertEl.style.display = 'none';
+        }, 3000);
+
+
+    })
+</script>  
+@*    form asp-action="Index" method="get">
+                <div class="form-group">
+                    <label for="searchTerm">Search:</label>
+                    <input type="text" class="form-control" id="searchTerm" name="searchTerm" value="@ViewBag.SearchTerm" />
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button> //sesrch button
+            </form>*@ 

@@ -1,0 +1,13 @@
+.create[b-l5gm7fsqgo] {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    box-shadow: 1rem 1rem 1rem -1rem black;
+}
+
+.Square[b-l5gm7fsqgo] {
+    background-color: powderblue;
+}
+
+.form-div[b-l5gm7fsqgo] {
+    padding: 2rem;
+}

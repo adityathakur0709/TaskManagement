@@ -1,0 +1,80 @@
+﻿@model Management.Models.Activity;
+
+
+
+<h1 class="text-center mt-5 text-decoration-underline ">CREATE</h1>
+
+<div class="border border-black rounded p-4 position-relative w-100 ">
+<div class="row justify-content-center create">
+
+      <div class="col-md-6 form-div">
+        <form asp-action="Create" asp-route-userId="@ViewBag.userid" method="post" class="" >
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group pt-2">
+                <label asp-for="TaskName" class="control-label">Taskname:</label>
+                <input asp-for="TaskName" class="form-control" />
+                <span asp-validation-for="TaskName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group pt-2">
+                <label asp-for="Description" class="control-label">Description:</label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3 pt-2">
+                <label asp-for="TaskDueDate" class="control-label">Due Date:</label>
+                <input asp-for="TaskDueDate" class="form-control" value="@DateTime.Now"/>
+                <span asp-validation-for="TaskDueDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group pt-2">
+                <label asp-for="PriorityId" class="control-label">Priority:</label>
+                <select asp-for="PriorityId" class="form-control" asp-items="@(new SelectList(ViewBag.Priorities,"PriorityId","Name"))">
+                    <option value="all"></option>
+                </select>
+                <span asp-validation-for="PriorityId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group pt-2">
+                <label asp-for="StatusId" class="control-label">Status:</label>
+                <select asp-for="StatusId" class="form-control" asp-items="@(new SelectList(ViewBag.Statuses,"StatusId","StatusName"))">
+                    <option value="All"></option>
+                </select>
+            </div>
+
+            <div class="form-group pt-2">
+                <label asp-for="CategoryId" class="control-label">Category:</label>
+                <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(ViewBag.Categories,"CategoryId","Name"))">
+                    <option value="All"></option>
+                </select>
+            </div>
+
+           @*  <div class="form-group">
+                <label asp-for="AssignDate" class="control-label"></label>
+                <input asp-for="AssignDate" class="form-control" />
+                <span asp-validation-for="AssignDate" class="text-danger"></span>
+            </div>
+
+             <div class="form-group">
+                <label asp-for="AssignedTo" class="control-label"></label>
+                <input asp-for="AssignedTo" class="form-control" />
+                <span asp-validation-for="AssignedTo" class="text-danger"></span>
+            </div> *@
+
+            <div class="form-group text-center pt-2">
+                <button type="submit" class="btn btn-primary float-start">Create</button>
+                <a asp-action="Index" class="btn btn-secondary float-end">Back to Task List</a>
+            </div> 
+        </form>
+    </div>
+</div>
+</>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

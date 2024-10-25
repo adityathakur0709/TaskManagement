@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Management.Models.Activity>;
+<!DOCTYPE html>
+<html>
+<head>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const activities = @Html.Raw(Json.Serialize(Model)); // Serialize activities from Razor model to JavaScript array
+
+            const events = activities.map(activity => ({
+                title: activity.taskName,
+                start: activity.taskDueDate,
+            }));
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: events // Assign events to FullCalendar
+            });
+
+            calendar.render();
+        });
+    </script>
+</head>
+<body>
+    <div id='calendar'></div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+@* @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var existingActivities = @Html.Raw(Json.Serialize(Model));
+
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: existingActivities.map(function (Activities) {
+                    return {
+                        taskName: Activities.TaskName,
+                        start: Activities.Description, // Assuming you have startDate property in your Activity model
+                        end: Activities.TaskDueDate,   // Assuming you have endDate property in your Activity model
+                        description: Activities.description, // Assuming you have description property in your Activity model
+                        // Add other properties as needed
+                        // You can customize the event object here based on your model properties
+                    };
+                }),
+                eventClick: function (info) {
+                    // Handle event click if needed
+                    console.log(info.event);
+                    // You can add more actions here like displaying details or editing events
+                }
+            });
+
+            calendar.render();
+        });
+    </script> 
+}*@
